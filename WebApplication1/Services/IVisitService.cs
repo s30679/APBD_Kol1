@@ -1,6 +1,8 @@
-﻿namespace WebApplication1.Services;
+﻿using WebApplication1.DTOs;
 
-public class IVisitService
+namespace WebApplication1.Services;
+
+public interface IVisitService
 {
-    
+    Task<VisitDTO>GetVisitsAsync(int id,CancellationToken cancellationToken);
 }

@@ -13,7 +13,7 @@ public class VisitController : ControllerBase
         _visitService = visitService;
     }
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetVisits(CancellationToken cancellationToken, int id)
+    public async Task<IActionResult> GetVisitsAsync(CancellationToken cancellationToken, int id)
     {
         
         return Ok();

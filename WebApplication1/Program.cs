@@ -1,6 +1,8 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using WebApplication1.Middlewares;
+using WebApplication1.Repositories;
+using WebApplication1.Services;
 
 namespace WebApplication1;
 
@@ -14,8 +16,8 @@ public class Program
         builder.Services.AddControllers();
         
         //Rejestrowanie zależności
-        builder.Services.AddScoped<IWarehouseService, WarehouseService>();
-        builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+        builder.Services.AddScoped<IVisitService, VisitService>();
+        builder.Services.AddScoped<IVisitRepository, VisitRepository>();
 
         builder.Services.AddSwaggerGen(c =>
         {
