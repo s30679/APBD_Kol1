@@ -1,3 +1,7 @@
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using WebApplication1.Middlewares;
+
 namespace WebApplication1;
 
 public class Program
@@ -5,11 +9,35 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
+        
         builder.Services.AddAuthorization();
+        builder.Services.AddControllers();
+        
+        //Rejestrowanie zależności
+        builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+        builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1",new OpenApiInfo
+            {
+                Title = "APBD_9",
+                Version = "v1",
+                Description = "APBD_9",
+                Contact = new OpenApiContact
+                {
+                    Name = "API Support",
+                    Email = "support@example.com",
+                    Url = new Uri("https://example.com/support")
+                },
+                License = new OpenApiLicense
+                {
+                    Name = "MIT License",
+                    Url = new Uri("https://opensource.org/licenses/MIT")
+                }
+            });
+        });
+        
         builder.Services.AddOpenApi();
 
         var app = builder.Build();
@@ -19,30 +47,24 @@ public class Program
         {
             app.MapOpenApi();
         }
-
+        app.UseGlobalExceptionHandlingMiddleware();
+        
+        app.UseSwagger();
+        
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "APBD_9");
+            c.DocExpansion(DocExpansion.List);
+            c.DefaultModelsExpandDepth(0);
+            c.DisplayRequestDuration();
+            c.EnableFilter();
+        });
+        
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
-        var summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                        new WeatherForecast
-                        {
-                            Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                            TemperatureC = Random.Shared.Next(-20, 55),
-                            Summary = summaries[Random.Shared.Next(summaries.Length)]
-                        })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast");
-
+        app.MapControllers();
+        
         app.Run();
     }
 }
