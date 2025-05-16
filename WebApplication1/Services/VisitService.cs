@@ -22,20 +22,14 @@ public class VisitService : IVisitService
             throw new InvalidOperationException("Nie ma wizyty o podanym id");
         }
         var client = await _VisitRepository.GetVisitClientAsync(id, cancellationToken);
-        if (client == null)
-        {
-            
-        }
         var mechanic = await _VisitRepository.GetVisitMechanicAsync(id, cancellationToken);
-        if (mechanic == null)
-        {
-            
-        }
         var service = await _VisitRepository.GetVisitServiceAsync(id, cancellationToken);
-        if (service == null)
+        return new VisitDTO
         {
-            
-        }
-        return new VisitDTO();
+            VisiDate = DateTime.UtcNow,
+            Client = client,
+            Mechanic = mechanic,
+            Service = service
+        };
     }
 }

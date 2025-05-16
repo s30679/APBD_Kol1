@@ -15,7 +15,7 @@ public class VisitController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetVisitsAsync(CancellationToken cancellationToken, int id)
     {
-        
-        return Ok();
+        var visits = await _visitService.GetVisitsAsync(id, cancellationToken);
+        return Ok(visits);
     }
 }
